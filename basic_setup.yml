@@ -1,6 +1,6 @@
 ---
 - name: Basic setup of the new server
-  hosts: server 
+  hosts:  "{{ variable_host | default('server')}}"
   user: root
 
   vars_files:
