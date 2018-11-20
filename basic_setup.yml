@@ -1,10 +1,10 @@
 ---
 - name: Basic setup of the new server
-  hosts:  "{{ variable_host | default('server')}}"
+  hosts:  "{{ variable_host | default('localhost')}}"
   user: root
 
-  vars_files:
-    - vars/config.yml
+  #vars_files:
+  #  - vars/config.yml
   
   vars:
     server_fqdn: "{{ server_hostname }}.{{ server_domain }}"
@@ -39,7 +39,7 @@
                 line="{{ hostvars[item].ansible_default_ipv4.address }} {{ server_fqdn }} {{ server_hostname }}"
                 state=present
     when: hostvars[item].ansible_default_ipv4.address is defined
-    with_items: "{{ groups['server'] }}"
+    with_items: "{{ groups['localhost'] }}"
     
 
   - name: Create a secondary, non-root user
@@ -47,8 +47,8 @@
          password='{{ normal_user_password }}'
          shell=/bin/bash
 
-  - name: Add remote authorized key to allow future passwordless logins
-    authorized_key: user={{ normal_user_name }} key="{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+  - #name: Add remote authorized key to allow future passwordless logins
+    #authorized_key: user={{ normal_user_name }} key="{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
 
   - name: Add normal user to sudoers
     lineinfile: dest=/etc/sudoers
